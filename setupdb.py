@@ -8,10 +8,18 @@ createdb="""CREATE TABLE IF NOT EXISTS routes (
 		time text
 		);"""
 		
-createdb="""CREATE TABLE IF NOT EXISTS Users (
+createdb="""CREATE TABLE IF NOT EXISTS users (
 		username text PRIMARY KEY,
 		password text NOT NULL,
 		email text,
+		);"""
+		
+createdb="""CREATE TABLE IF NOT EXISTS stops (
+		route_ID text PRIMARY KEY,
+		location text NOT NULL,
+		rider_ID text NOT NULL,
+		start bool,
+		end bool,
 		);"""
 		
 def dbSetup():
