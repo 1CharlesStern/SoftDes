@@ -27,6 +27,23 @@ def insertRoute():
 		return json.dumps({'result':'there was an issue with your request'})
 	conn.close()
 	
+@app.route("/createAccount",methods=['POST'])
+def createAccount():
+	conn=sqlite3.connect(DATABASE)
+	c=conn.cursor()
+	username = request.form['username']
+	password = request.form['password']
+	email = request.form['email']
+	if username and password and email:
+		user = (username,password,email)
+		c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
+		conn.commit()
+		#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
+		return json.dumps({'result':'all fields correct, inserted into db'})
+	else:
+		return json.dumps({'result':'there was an issue with your request'})
+	conn.close()
+	
 @app.route("/allDrives")
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
