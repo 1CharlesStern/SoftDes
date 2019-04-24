@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "driverId": "driverOne",
+      "StartingPoint": "10N,70W",
+      "Destination": "15N,50W",
+      "DepartureTime": "4:15 4/24/19"
+    },
+    {
+      "driverId": "driverTwo",
+      "StartingPoint": "70N,70W",
+      "Destination": "20N,50W",
+      "DepartureTime": "4:15 4/24/19"
+    },
+    {
+      "driverId": "driverThree",
+      "StartingPoint": "100N,70W",
+      "Destination": "150N,50W",
+      "DepartureTime": "4:15 4/24/19"
+    }
+  ]
+}

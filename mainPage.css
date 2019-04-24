@@ -7,6 +7,23 @@ body {
   background-color: #00ccff;
 }
 
+
+a:link{
+  color:black;
+}
+a:visited{
+  color:black;
+}
+a:hover{
+  color:black;
+}
+a:focus{
+  color:black;
+}
+a:active{
+  color:black;
+}
+
 input[type=text], input[type=password] {
   width: 100%;
   padding: 12px 20px;
@@ -30,6 +47,10 @@ button:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.overflowContainer{
+  padding: 5px;
+  overflow: hidden;
+}
 .driveContainer{
   background-color: white;
   padding: 16px;
