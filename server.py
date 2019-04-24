@@ -30,8 +30,11 @@ def insertRoute():
 @app.route("/allDrives")
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
-	c=conn.cursor
-	
+	c=conn.cursor()
+	c.execute("SELECT * FROM routes")
+	rows=c.fetchall()
+	#pretty sure this data is accessed by the column names so data[index_of_row][column_name] column names are routeid,driverid,date,time case sensitive
+	return json.dumps(rows)
 	conn.close()
 if __name__=="__main__":
 
