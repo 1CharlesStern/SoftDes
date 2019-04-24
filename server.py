@@ -30,7 +30,7 @@ def insertRoute():
 @app.route("/allDrives")
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
-	c=conn.cursor
+	c=conn.cursor()
 	
 	conn.close()
 if __name__=="__main__":
