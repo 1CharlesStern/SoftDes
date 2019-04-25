@@ -40,5 +40,5 @@ function loadJSON(callback) {
 
  function logOut(){
    createCookie("token", "", -1);
-   window.location.href = "./login.html";
+   window.location.href = "/login";
  }

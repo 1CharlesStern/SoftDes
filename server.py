@@ -5,135 +5,163 @@ app= Flask(__name__,static_url_path='/static')
 
 DATABASE="db.sqlite"
 
-@app.route("/")
-def main():
-	resp = make_response(render_template("mainPage.html"))
-	resp.set_cookie('username', 'I am cookie')
-	return resp
-	
-@app.route("/createRide")
-def createRideP():
-	return render_template("createRide.html")
-	
-@app.route("/addStopP")
-def addStopP():
-	return render_template("addStop.html")
-	
-@app.route("/login")
-def addStP():
-	return render_template("login.html")
+@app.route("/mainPage",methods=['GET'])
+def mainPage():
+	if request.method == 'GET':
+		resp = make_response(render_template("mainPage.html"))
+		return resp
 
-@app.route("/createUser")	
+@app.route("/addStop",methods=['GET', 'POST'])
+def addStop():
+	if request.method == 'GET':
+		resp = make_response(render_template("addStop.html"))
+		return resp
+	elif request.method == 'PUT':
+		resp = make_response(render_template("addStop.html"))
+		return resp
+
+@app.route("/createRide",methods=['GET', 'POST'])
+def createRide():
+	if request.method == 'GET':
+		resp = make_response(render_template("createRide.html"))
+		return resp
+	elif request.method == 'PUT':
+		resp = make_response(render_template("createRide.html"))
+		return resp
+
+@app.route("/createUser",methods=['GET', 'POST'])
 def createUser():
-	return render_template("createUser.html")
-	
+	if request.method == 'GET':
+		resp = make_response(render_template("createUser.html"))
+		return resp
+	elif request.method == 'PUT':
+		resp = make_response(render_template("createUser.html"))
+		return resp
 
-@app.route("/insertRoute",methods=['POST'])
+@app.route("/riderWaiting",methods=['GET', 'POST'])
+def riderWaiting():
+	if request.method == 'GET':
+		resp = make_response(render_template("riderWaiting.html"))
+		return resp
+	elif request.method == 'PUT':
+		resp = make_response(render_template("riderWaiting.html"))
+		return resp
+
+@app.route("/insertRoute",methods=['GET','POST'])
 def insertRoute():
-	conn=sqlite3.connect(DATABASE)
-	c=conn.cursor()
-	#get values from form by keyname
-	driverid=request.form['driverID']
-	date=request.form['date']
-	time= request.form['time']
-	start = request.form['start']
-	end = request.form['end']
-	
-	#routeStops(routeid driverID, start, end)
-	
-	if routeid and driverid and date and time:
-		route=(routeid, driverid , date, time)
-		c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?)",route)
-		conn.commit()
-		#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
-		return json.dumps({'result':'all fields correct, inserted into db'})
-	else:
-		return json.dumps({'result':'there was an issue with your request'})
-	conn.close()
+	if request.method == 'GET':
+		resp = make_response(render_template("insertRoute.html"))
+		return resp
+	elif request.method == 'PUT':
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		#get values from form by keyname
+		driverid=request.form['driverID']
+		date=request.form['date']
+		time= request.form['time']
+		start = request.form['start']
+		end = request.form['end']
 
-#def routeStops(routeid, username, start , end):
-	
-	
-	#this is basicly sudocode at this point
-	#this us not done and written by someone who knows nothing about sql
-@app.route("/createAccount",methods=['POST'])
+		if routeid and driverid and date and time:
+			route=(routeid, driverid , date, time)
+			c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?)",route)
+			conn.commit()
+			#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
+			return json.dumps({'result':'all fields correct, inserted into db'})
+		else:
+			return json.dumps({'result':'there was an issue with your request'})
+		conn.close()
+
+@app.route("/createAccount",methods=['GET','POST'])
 def createAccount():
-	conn=sqlite3.connect(DATABASE)
-	c=conn.cursor()
-	username = request.form['username']
-	password = request.form['password']
-	email = request.form['email']
-	#query for duplicate usernames and emails
-	invalidUser = c.execute("SELECT username FROM users WHERE username = ?",username)
-	invalidEmail = c.execute("SELECT username FROM users WHERE email = ?",email)
-	
-	#if the new user is valid add them to the table
-	if username and password and email:
-		user = (username,password,email)
-		c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
-		conn.commit()
-		#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
-		return json.dumps({'result':'all fields correct, inserted into db'})
-	else:
-		return json.dumps({'result':'there was an issue with your request'})
-	conn.close()
-	
-		#this is basicly sudocode at this point
-		#this us not done and written by someone who knows nothing about sql
-@app.route("/insertStop",methods=['POST'])	
+	if request.method == 'GET':
+		resp = make_response(render_template("createAccount.html"))
+		return resp
+	elif request.method == 'PUT':
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		username = request.form['username']
+		password = request.form['password']
+		email = request.form['email']
+		#query for duplicate usernames and emails
+		invalidUser = c.execute("SELECT username FROM users WHERE username = ?",username)
+		invalidEmail = c.execute("SELECT username FROM users WHERE email = ?",email)
+
+		#if the new user is valid add them to the table
+		if username and password and email:
+			user = (username,password,email)
+			c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
+			conn.commit()
+			#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
+			return json.dumps({'result':'all fields correct, inserted into db'})
+		else:
+			return json.dumps({'result':'there was an issue with your request'})
+		conn.close()
+
+			#this is basicly sudocode at this point
+			#this us not done and written by someone who knows nothing about sql
+@app.route("/insertStop",methods=['GET','POST'])
 def insertStop():
-	conn=sqlite3.connect(DATABASE)
-	c=conn.cursor()
-	routeID = request.form['routeID']
-	start = request.form['start']
-	end = request.form['end']
-	riderID = request['username']
-	
-	#add stops to table
-	if routeID and start and end and riderID:
-		startStop = (routeID,start,riderID)
-		endStop = (routeID,end,riderID)
-		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
-		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
-		conn.commit()
-		return json.dumps({'result':'all fields correct, inserted into db'})
-	else:
-		return json.dumps({'result':'there was an issue with your request'})
-	conn.close()
-	
+	if request.method == 'GET':
+		resp = make_response(render_template("insertStop.html"))
+		return resp
+	elif request.method == 'PUT':
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		routeID = request.form['routeID']
+		start = request.form['start']
+		end = request.form['end']
+		riderID = request['username']
+
+		#add stops to table
+		if routeID and start and end and riderID:
+			startStop = (routeID,start,riderID)
+			endStop = (routeID,end,riderID)
+			c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
+			c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
+			conn.commit()
+			return json.dumps({'result':'all fields correct, inserted into db'})
+		else:
+			return json.dumps({'result':'there was an issue with your request'})
+		conn.close()
+
+			#this is basicly sudocode at this point
+			#this us not done and written by someone who knows nothing about sql
+@app.route("/login",methods=['GET','POST'])
+def login():
+	if request.method == 'GET':
+		resp = make_response(render_template("login.html"))
+		return resp
+	elif request.method == 'PUT':
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		username = request.form['username']
+		password = request.form['password']
+
+		#query for if user exist
+		userQ = c.execute("SELECT username FROM users WHERE username = ?",username)
+
+		#check password
+		passQ = c.execute("SELECT password FROM users WHERE username = ?",password)
+
+		#if everything is good log them in
+		if user == username and passQ == password:
+			return json.dumps({'result':'all fields correct, inserted into db'})
+		else:
+			return json.dumps({'result':'there was an issue with your request'})
+		conn.close()
+
 		#this is basicly sudocode at this point
 		#this us not done and written by someone who knows nothing about sql
-@app.route("/login",methods=['POST'])
-def login():
-	conn=sqlite3.connect(DATABASE)
-	c=conn.cursor()
-	username = request.form['username']
-	password = request.form['password']
-	
-	#query for if user exist
-	userQ = c.execute("SELECT username FROM users WHERE username = ?",username)
-	
-	#check password
-	passQ = c.execute("SELECT password FROM users WHERE username = ?",password)
-
-	#if everything is good log them in 
-	if user == username and passQ == password:
-		return json.dumps({'result':'all fields correct, inserted into db'})
-	else:
-		return json.dumps({'result':'there was an issue with your request'})
-	conn.close()
-
-	#this is basicly sudocode at this point
-	#this us not done and written by someone who knows nothing about sql
-@app.route("/hasRide",methods=['POST','GET'])		
+@app.route("/hasRide",methods=['GET'])
 def hasRide():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-	
+
 	username = request.form['username']
 	currentRide = c.execute("SELECT riderid FROM stops WHERE riderid=?",username)
-	
-	#need to return true if currentRide is not false 
+
+	#need to return true if currentRide is not false
 	#if you couldnt tell I have no idea how to actuall code this stuff.
 	if currentRide:
 		return True
@@ -157,11 +185,10 @@ def allDrives():
 		end = c.fetchone()
 		dict = {"routeID":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
 		list.append(dict)
-		
+
 	#pretty sure this data is accessed by the column names so data[index_of_row][column_name] column names are routeid,driverid,date,time case sensitive
 	return json.dumps(list)
 	conn.close()
-	
-if __name__=="__main__":
 
+if __name__=="__main__":
 	app.run()

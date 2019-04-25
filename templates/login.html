@@ -1,6 +1,11 @@
-<link rel="stylesheet" href="/static/login.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<form action="action_page.php">
+<script src="/static/utils.js"></script>
+<link rel="stylesheet" href="/static/mainPage.css">
+<div class="header">
+  <div class="driverListTitle">
+    Login
+  </div>
+</div>
+<form action="/login" method="post">
   <div class="container">
     <label for="uname"><b>Username</b></label>
     <input type="text" placeholder="Enter Username" name="uname" required>
@@ -8,7 +13,7 @@
     <label for="psw"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="psw" required>
 
-    <button type="submit">Login</button>
-    <button type="submit" onclick="location.href='/createUser'">Create Account</button>
+    <button class="fullWidthButton" type="submit">Login</button>
+    <button class="fullWidthButton" type="submit" onclick="location.href='/createUser'">Create Account</button>
   </div>
 </form>
