@@ -39,6 +39,6 @@ function loadJSON(callback) {
  }
 
  function logOut(){
-   createCookie("token", "", -1);
+   createCookie("username", "", -1);
    window.location.href = "/login";
  }

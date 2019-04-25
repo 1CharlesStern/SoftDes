@@ -4,10 +4,6 @@
   <div class="driverListTitle">
     Create New User
   </div>
-  <button type="submit" class="logOutButton"
-    onclick="logOut()">
-      Log Out
-  </button>
 </div>
 <form action="/createUser" method="post">
   <div class="container">
@@ -17,8 +13,8 @@
     <input type="text" placeholder="Enter Email Address" name="email" required>
     <label for="password"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="password" required>
-    <label for="password"><b>Confirm Password</b></label>
-    <input type="comfirmPassword" placeholder="Confirm Password" name="confirmPassword">
+    <label for="confirmPassword"><b>Confirm Password</b></label>
+    <input type="password" placeholder="Confirm Password" name="confirmPassword">
     <button class="fullWidthButton" type="submit">Create Account</button>
     <a href="/login">Cancel</a>
   </div>
