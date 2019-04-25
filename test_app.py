@@ -7,15 +7,30 @@ client = server.app.test_client()
 
 #TEST LOGIN
 def test_good_redirect():
-    return
+    client.post('/createUser', data=dict(
+        username='username',
+        email='joe@example.com',
+        password='passw0rd',
+        password2='passw0rd'
+    ), follow_redirects=True)
+    dt = client.post('/login', data=dict(
+        username='username',
+        password='passw0rd',
+    ), follow_redirects=True)
+    assertEqual(dt.status_code, 200)
 def test_bad_redirect():
-    return
+    dt = client.post('/login', data=dict(
+        username='username',
+        password='passw0rd',
+    ), follow_redirects=True)
+    assertEqual(dt.status_code, 400)
 def test_good_getToken():
     return
 def test_bad_getToken():
     return
 def test_login_create():
-    return
+    dt = client.get('/login', follow_redirect=True)
+    assert 'Login' in dt.data
 #TEST CREATE ACCOUNT
 def test_bad_username():
     #TODO update post data dict with correct field names
