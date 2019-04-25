@@ -120,10 +120,19 @@ def hasRide():
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-	c.execute("SELECT * FROM routes")
+	c.execute("SELECT route_ID AND time AND date FROM routes")
 	rows=c.fetchall()
+	list = ()
+	for row in rows:
+		c.execute("SELECT location FROM stops WHERE start=true AND routeID=?",row[0])
+		start = c.fetchone()
+		c.execute("SELECT location FROM stops WHERE end=true AND routeID=?",row[0])
+		end = c.fetchone()
+		dict = {"routeID":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
+		list.append(dict)
+		
 	#pretty sure this data is accessed by the column names so data[index_of_row][column_name] column names are routeid,driverid,date,time case sensitive
-	return json.dumps(rows)
+	return json.dumps(list)
 	conn.close()
 if __name__=="__main__":
 
