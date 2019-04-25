@@ -37,3 +37,8 @@ function loadJSON(callback) {
     };
     xobj.send(null);
  }
+
+ function logOut(){
+   createCookie("token", "", -1);
+   window.location.href = "/login";
+ }

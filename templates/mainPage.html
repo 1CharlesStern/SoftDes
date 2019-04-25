@@ -1,11 +1,23 @@
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<script src="/static/utils.js"></script>
 <script src="/static/mainPage.js"></script>
 <link rel="stylesheet" href="/static/mainPage.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<body onload="myFunction()">
-  <div id="driverList">
+<body onload="init()">
+  <div class="header">
+    <div class="driverListTitle">
+      Available Rides
+    </div>
+    <button type="submit" class="logOutButton"
+      onclick="logOut()">
+        Log Out
+    </button>
   </div>
-	<form action="/createRide">
-		<input type="submit" class="startNewRideButton" value="Start New Ride" />
-	</form>
-
+  <div id="driverList" class="driverList">
+  </div>
+  <div class="centerParent">
+    <button type="submit" class="startNewRideButton"
+      onclick="window.location='./createRide.html';">
+        Start New Ride
+    </button>
+  </div>
 </body>
