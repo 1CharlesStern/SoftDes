@@ -16,7 +16,7 @@ def addStop():
 	if request.method == 'GET':
 		resp = make_response(render_template("addStop.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		resp = make_response(render_template("addStop.html"))
 		return resp
 
@@ -25,7 +25,7 @@ def createRide():
 	if request.method == 'GET':
 		resp = make_response(render_template("createRide.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		resp = make_response(render_template("createRide.html"))
 		return resp
 
@@ -34,16 +34,37 @@ def createUser():
 	if request.method == 'GET':
 		resp = make_response(render_template("createUser.html"))
 		return resp
-	elif request.method == 'PUT':
-		resp = make_response(render_template("createUser.html"))
-		return resp
+	elif request.method == 'POST':
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		username = request.form['username']
+		password = request.form['password']
+		email = request.form['email']
+		#query for duplicate usernames and emails
+		c.execute("SELECT username,password FROM users WHERE username = ?",username)
+		userExist =  c.fetchone()
+		if userExist:
+			resp = make_response(render_template("createUser.html"))
+			return resp
+
+			#if the new user is valid add them to the table
+			if username and password and email:
+				user = (username,password,email)
+				c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
+				conn.commit()
+				resp = make_response(render_template("mainPage.html"))
+				resp = resp.set_cookie(username)
+				return resp
+			else:
+				return json.dumps({'result':'there was an issue with your request'})
+			conn.close()
 
 @app.route("/riderWaiting",methods=['GET', 'POST'])
 def riderWaiting():
 	if request.method == 'GET':
 		resp = make_response(render_template("riderWaiting.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		resp = make_response(render_template("riderWaiting.html"))
 		return resp
 
@@ -52,26 +73,26 @@ def insertRoute():
 	if request.method == 'GET':
 		resp = make_response(render_template("insertRoute.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		conn=sqlite3.connect(DATABASE)
 		c=conn.cursor()
 		#get values from form by keyname
-	driverid=request.form['driverid']
-	date=request.form['date']
-	time= request.form['time']
-	start = request.form['start']
-	end = request.form['end']
+		driverid=request.form['driverid']
+		date=request.form['date']
+		time= request.form['time']
+		start = request.form['start']
+		end = request.form['end']
 
-	routeStops(routeid, driverid, start, end)
-	if routeid and driverid and date and time:
-		route=(routeid, driverid , date, time)
-		c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?)",route)
-		conn.commit()
-		#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
-		return json.dumps({'result':'all fields correct, inserted into db'})
-	else:
-		return json.dumps({'result':'there was an issue with your request'})
-	conn.close()
+		routeStops(routeid, driverid, start, end)
+		if routeid and driverid and date and time:
+			route=(routeid, driverid , date, time)
+			c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?)",route)
+			conn.commit()
+			#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
+			return json.dumps({'result':'all fields correct, inserted into db'})
+		else:
+			return json.dumps({'result':'there was an issue with your request'})
+		conn.close()
 
 def routeStops(routeid, username, start , end):
 	conn=sqlite3.connect(DATABASE)
@@ -94,30 +115,30 @@ def createAccount():
 	if request.method == 'GET':
 		resp = make_response(render_template("createAccount.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		conn=sqlite3.connect(DATABASE)
 		c=conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
 		email = request.form['email']
 		#query for duplicate usernames and emails
-	c.execute("SELECT username,password FROM users WHERE username = ?",username)
-	userExist =  c.fetchone()
-	if userExist:
-		resp = make_response(render_template("createUser.html"))
-		return resp
-
-		#if the new user is valid add them to the table
-		if username and password and email:
-			user = (username,password,email)
-			c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
-			conn.commit()
-			resp = make_response(render_template("mainPage.html"))
-			resp = resp.set_cookie(username)
+		c.execute("SELECT username,password FROM users WHERE username = ?",username)
+		userExist =  c.fetchone()
+		if userExist:
+			resp = make_response(render_template("createUser.html"))
 			return resp
-		else:
-			return json.dumps({'result':'there was an issue with your request'})
-		conn.close()
+
+			#if the new user is valid add them to the table
+			if username and password and email:
+				user = (username,password,email)
+				c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
+				conn.commit()
+				resp = make_response(render_template("mainPage.html"))
+				resp = resp.set_cookie(username)
+				return resp
+			else:
+				return json.dumps({'result':'there was an issue with your request'})
+			conn.close()
 
 			#this is basicly sudocode at this point
 			#this us not done and written by someone who knows nothing about sql
@@ -126,25 +147,24 @@ def insertStop():
 	if request.method == 'GET':
 		resp = make_response(render_template("insertStop.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		conn=sqlite3.connect(DATABASE)
 		c=conn.cursor()
 		routeid = request.form['routeid']
 		start = request.form['start']
 		end = request.form['end']
 		riderID = request['username']
-
-		#add stops to table
-	if routeid and start and end and riderID:
-		startStop = (routeid,start,riderID)
-		endStop = (routeid,end,riderID)
-		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
-		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
-		conn.commit()
-		return json.dumps({'result':'all fields correct, inserted into db'})
-	else:
-		return json.dumps({'result':'there was an issue with your request'})
-	conn.close()
+			#add stops to table
+		if routeid and start and end and riderID:
+			startStop = (routeid,start,riderID)
+			endStop = (routeid,end,riderID)
+			c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
+			c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
+			conn.commit()
+			return json.dumps({'result':'all fields correct, inserted into db'})
+		else:
+			return json.dumps({'result':'there was an issue with your request'})
+		conn.close()
 
 			#this is basicly sudocode at this point
 			#this us not done and written by someone who knows nothing about sql
@@ -153,26 +173,29 @@ def login():
 	if request.method == 'GET':
 		resp = make_response(render_template("login.html"))
 		return resp
-	elif request.method == 'PUT':
+	elif request.method == 'POST':
 		conn=sqlite3.connect(DATABASE)
 		c=conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-
-		#query for if user exist
-	c.execute("SELECT username,password FROM users WHERE username = ?",username)
-	userQ = c.fetchone()
-
-		#if everything is good log them in
-	if userQ[1] == password:
-		resp = make_response(render_template("mainPage.html"))
-		resp.set_cookie(username)
-		return resp
-	else:
-		resp = make_response(render_template("login.html"))
-		return resp
-		conn.close()
-
+		print(username)
+		print(password)
+			#query for if user exist
+		c.execute("SELECT username,password FROM users WHERE username = ?",(username,))
+		userQ = c.fetchone()
+		if userQ:
+			if userQ[1] == password:
+				resp = make_response(render_template("mainPage.html"))
+				resp.set_cookie(username)
+				return resp
+			else:
+				resp = make_response(render_template("login.html"))
+				return resp
+				conn.close()
+		else:
+			resp = make_response(render_template("login.html"))
+			return resp
+			conn.close()
 		#this is basicly sudocode at this point
 		#this us not done and written by someone who knows nothing about sql
 @app.route("/hasRide",methods=['GET'])
