@@ -1,6 +1,8 @@
 from flask import Flask, render_template, json, request
 import sqlite3
+
 app= Flask(__name__,static_url_path='/static')
+
 
 DATABASE="db.sqlite"
 
@@ -93,7 +95,7 @@ def insertStop():
 	
 		#this is basicly sudocode at this point
 		#this us not done and written by someone who knows nothing about sql
-@app.route("/addStop",methods=['POST'])	
+@app.route("/login",methods=['POST'])
 def login():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
@@ -126,9 +128,9 @@ def hasRide():
 	#need to return true if currentRide is not false 
 	#if you couldnt tell I have no idea how to actuall code this stuff.
 	if currentRide:
-		return true
+		return True
 	else:
-		return false;
+		return False;
 	conn.close()
 
 

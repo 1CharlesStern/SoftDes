@@ -4,3 +4,4 @@ Created for CS3704 Intermediate Software Design.
 Dependencies:
 Python 3.7+
 Flask 1.0+
+Pytest 4.4+
