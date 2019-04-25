@@ -8,13 +8,13 @@ createdb="""CREATE TABLE IF NOT EXISTS routes (
 		time text
 		);"""
 		
-createdb="""CREATE TABLE IF NOT EXISTS users (
+createuserstable="""CREATE TABLE IF NOT EXISTS users (
 		username text PRIMARY KEY,
 		password text NOT NULL,
 		email text,
 		);"""
 		
-createdb="""CREATE TABLE IF NOT EXISTS stops (
+createstopstable="""CREATE TABLE IF NOT EXISTS stops (
 		route_ID text PRIMARY KEY,
 		location text NOT NULL,
 		rider_ID text NOT NULL,
@@ -26,6 +26,8 @@ def dbSetup():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
 	c.execute(createdb)
+	c.execute(createuserstable)
+	c.execute(createstopstable)
 	conn.commit()
 	conn.close()
 
