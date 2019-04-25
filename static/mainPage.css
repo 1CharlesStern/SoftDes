@@ -1,0 +1,115 @@
+form {
+  background-color: white;
+  border: 3px solid #f1f1f1;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+body {
+  background-color: #00ccff;
+}
+
+
+a:link{
+  color:black;
+}
+a:visited{
+  color:black;
+}
+a:hover{
+  color:black;
+}
+a:focus{
+  color:black;
+}
+a:active{
+  color:black;
+}
+
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #339933;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.overflowContainer{
+  padding: 5px;
+  overflow: hidden;
+}
+.driveContainer{
+  background-color: white;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  overflow: hidden;
+  width: 100%;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+.cardElement {
+  float: left;
+  width: 30%;
+}
+.startNewRideButton{
+  position: fixed;
+  top: 100%;
+  width: 50%;
+  left: 45%;
+  margin-top: -100px; /* Negative half of height. */
+  margin-left: -250px; /* Negative half of width. */
+}
+.createUserButton{
+  width: 20%;
+  float: left;
+  padding: 10px 18px;
+  background-color: #339933;
+}
+.addStopbtn {
+  width: 10%;
+  float: right;
+  padding: 10px 18px;
+  background-color: #339933;
+}
+.closeWindowButton{
+  width: 100%
+  float: center
+  padding: 10px 18px;
+}
+.cancelbtn {
+  width: auto;
+  float: right;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+.container {
+  padding: 16px;
+  overflow: auto;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn {
+    width: 100%;
+  }
+}
