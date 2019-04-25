@@ -1,6 +1,6 @@
 from flask import Flask, render_template, json, request
 import sqlite3
-app= Flask(__name__)
+app= Flask('rideshare')
 
 DATABASE="db.sqlite"
 
