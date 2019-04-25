@@ -1,4 +1,14 @@
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="mainPage.css">
+<script src="utils.js"></script>
+<div class="header">
+  <div class="driverListTitle">
+    Create Ride
+  </div>
+  <button type="submit" class="logOutButton"
+    onclick="logOut()">
+      Log Out
+  </button>
+</div>
 <form action="action_page.php">
   <div class="container">
     <label for="uname"><b>Start</b></label>
@@ -11,7 +21,7 @@
     <input type="time" placeholder="Time..." name="uname" required>
   </div>
   <div class="container">
-    <button type="submit">Submit Request</button>
-    <a href="/mainPage.html">Cancel</a>
+    <button class="fullWidthButton" type="submit">Submit Request</button>
+    <a href="./mainPage.html">Cancel</a>
   </div>
 </form>
