@@ -40,23 +40,39 @@ button {
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 100%;
 }
 
+.fullWidthButton{
+    background-color: #339933;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
 button:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-
+.logOutButton{
+  display: inline-block;
+  width:10%;
+  float:right;
+  background-color: teal;
+}
+.header{
+  display: inline-block;
+  width:100%;
+}
 .driverListTitle{
+  width:40%;
   color:white;
-  width: 100%;
+  display: inline-block;
   padding: 12px 20px;
   margin: 8px 0;
-  display: inline-block;
   font-size: 200%;
   font-weight: bold;
   font-family: fantasy;
-  box-sizing: border-box;
 }
 .driverList{
   height: 65%;

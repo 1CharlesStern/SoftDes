@@ -1,8 +1,14 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <script src="utils.js"></script>
 <script src="addStop.js"></script>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="mainPage.css">
 <body onload="init()">
+  <div class="header">
+    <button type="submit" class="logOutButton"
+      onclick="logOut()">
+        Log Out
+    </button>
+  </div>
   <form action="action_page.php">
     <div class="container">
       <label for="uname"><b>Start</b></label>
@@ -11,7 +17,7 @@
       <input type="text" placeholder="Destination..." name="uname" required>
     </div>
     <div class="container">
-      <button type="submit">Submit Request</button>
+      <button class="fullWidthButton" type="submit">Submit Request</button>
       <a href="mainPage.html">Cancel</a>
     </div>
   </form>
