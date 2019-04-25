@@ -4,12 +4,12 @@ import server
 import sqlite3
 
 client = server.app.test_client()
-create
+
 #TEST LOGIN
 def test_good_redirect():
     return
 def test_bad_redirect():
-    dt = client.get('/login')
+    dt = client.get('/createRide')
     print(dt)
     return
 def test_good_getToken():
@@ -96,17 +96,46 @@ def test_new_db_record():
     assert 'username' in cur.fetchone()
 #TEST INSERT RIDE
 def test_bad_location():
-    return
+    dt = client.post('/createRide', data=dict(
+        start='your mom',
+        end='gay',
+        date='2018-07-22',
+        time='10:00'
+    ))
+    assertEqual(dt.status_code, 400)
 def test_locations_different():
-    return
+    # TODO update post data dict with correct field names
+    dt = client.post('/createRide', data=dict(
+        start='10W',
+        end='10W',
+        date='2018-07-22',
+        time='10:00'
+    ))
+    assertEqual(dt.status_code, 400)
 def test_datefield_only_dates():
-    return
+    # TODO update post data dict with correct field names
+    dt = client.post('/createRide', data=dict(
+        start='10W',
+        end='20S',
+        date='E',
+        time='10:00'
+    ))
+    assertEqual(dt.status_code, 400)
 def test_timefield_only_times():
-    return
-def test_cancel_main():
-    return
-def test_submit_main():
-    return
+    # TODO update post data dict with correct field names
+    dt = client.post('/createRide', data=dict(
+        start='10W',
+        end='20S',
+        date='2018-07-22',
+        time='H'
+    ))
+    assertEqual(dt.status_code, 400)
+def test_cancel_but():
+    dt = client.get('/createRide')
+    assert 'Cancel' in dt.data
+def test_submit_but():
+    dt = client.get('/createRide')
+    assert 'Submit Request' in dt.data
 #TEST ADD STOP
 def test_location_invalid():
     return
