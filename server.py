@@ -33,7 +33,7 @@ def insertRoute():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
 	#get values from form by keyname
-	driverid=request.form['driverID']
+	driverid=request.form['driverid']
 	date=request.form['date']
 	time= request.form['time']
 	start = request.form['start']
@@ -102,15 +102,15 @@ def createAccount():
 def insertStop():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-	routeID = request.form['routeID']
+	routeid = request.form['routeid']
 	start = request.form['start']
 	end = request.form['end']
 	riderID = request['username']
 	
 	#add stops to table
-	if routeID and start and end and riderID:
-		startStop = (routeID,start,riderID)
-		endStop = (routeID,end,riderID)
+	if routeid and start and end and riderID:
+		startStop = (routeid,start,riderID)
+		endStop = (routeid,end,riderID)
 		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
 		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
 		conn.commit()
@@ -174,7 +174,7 @@ def allDrives():
 		start = c.fetchone()
 		c.execute("SELECT location FROM stops WHERE end=true AND routeid=?",row[0])
 		end = c.fetchone()
-		dict = {"routeID":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
+		dict = {"routeid":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
 		list.append(dict)
 		
 	#pretty sure this data is accessed by the column names so data[index_of_row][column_name] column names are routeid,driverid,date,time case sensitive
