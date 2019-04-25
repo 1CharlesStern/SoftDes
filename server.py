@@ -39,7 +39,7 @@ def insertRoute():
 	start = request.form['start']
 	end = request.form['end']
 	
-	#routeStops(routeid driverID, start, end)
+	routeStops(routeid driverID, start, end)
 	
 	if routeid and driverid and date and time:
 		route=(routeid, driverid , date, time)
@@ -51,7 +51,21 @@ def insertRoute():
 		return json.dumps({'result':'there was an issue with your request'})
 	conn.close()
 
-#def routeStops(routeid, username, start , end):
+def routeStops(routeid, username, start , end):
+	conn=sqlite3.connect(DATABASE)
+	c=conn.cursor()
+	
+	#add stops to table
+	if routeid and start and end and username:
+		startStop = (routeid,start,username,true)
+		endStop = (routeid,end,username,true)
+		c.execute("INSERT INTO stops(routeid,location,riderid,start)VALUES(?,?,?)",startStop)
+		c.execute("INSERT INTO stops(routeid,location,riderid,end)VALUES(?,?,?)",endStop)
+		conn.commit()
+		return json.dumps({'result':'all fields correct, inserted into db'})
+	else:
+		return json.dumps({'result':'there was an issue with your request'})
+	conn.close()
 	
 	
 	#this is basicly sudocode at this point
@@ -64,16 +78,20 @@ def createAccount():
 	password = request.form['password']
 	email = request.form['email']
 	#query for duplicate usernames and emails
-	invalidUser = c.execute("SELECT username FROM users WHERE username = ?",username)
-	invalidEmail = c.execute("SELECT username FROM users WHERE email = ?",email)
+	c.execute("SELECT username,password FROM users WHERE username = ?",username)
+	userExist =  c.fetchone()
+	if userExist
+		resp = make_response(render_template("createUser.html"))
+		return resp	
 	
 	#if the new user is valid add them to the table
 	if username and password and email:
 		user = (username,password,email)
 		c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
 		conn.commit()
-		#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
-		return json.dumps({'result':'all fields correct, inserted into db'})
+		resp = make_response(render_template("mainPage.html"))
+		resp = resp.set_cookie(username)
+		return resp	
 	else:
 		return json.dumps({'result':'there was an issue with your request'})
 	conn.close()
@@ -111,16 +129,17 @@ def login():
 	password = request.form['password']
 	
 	#query for if user exist
-	userQ = c.execute("SELECT username FROM users WHERE username = ?",username)
-	
-	#check password
-	passQ = c.execute("SELECT password FROM users WHERE username = ?",password)
+	c.execute("SELECT username,password FROM users WHERE username = ?",username)
+	userQ = c.fetchone()
 
 	#if everything is good log them in 
-	if user == username and passQ == password:
-		return json.dumps({'result':'all fields correct, inserted into db'})
+	if userQ[1] == password:
+		resp = make_response(render_template("mainPage.html"))
+		resp.set_cookie(username)
+		return resp
 	else:
-		return json.dumps({'result':'there was an issue with your request'})
+		resp = make_response(render_template("login.html"))
+		return resp	
 	conn.close()
 
 	#this is basicly sudocode at this point
@@ -131,8 +150,8 @@ def hasRide():
 	c=conn.cursor()
 	
 	username = request.form['username']
-	currentRide = c.execute("SELECT riderid FROM stops WHERE riderid=?",username)
-	
+	c.execute("SELECT riderid FROM stops WHERE riderid=?",username)
+	currentRide = c.fetchone()
 	#need to return true if currentRide is not false 
 	#if you couldnt tell I have no idea how to actuall code this stuff.
 	if currentRide:
