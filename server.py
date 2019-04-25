@@ -1,12 +1,31 @@
 from flask import Flask, render_template, json, request
 import sqlite3
-app= Flask('rideshare')
+
+app= Flask(__name__,static_url_path='/static')
+
 
 DATABASE="db.sqlite"
 
 @app.route("/")
 def main():
-	return render_template("index.html")
+	return render_template("mainPage.html")
+	
+@app.route("/createRide")
+def createRideP():
+	return render_template("createRide.html")
+	
+@app.route("/addStopP")
+def addStopP():
+	return render_template("addStop.html")
+	
+@app.route("/login")
+def addStP():
+	return render_template("login.html")
+
+@app.route("/createUser")	
+def createUser():
+	return render_template("createUser.html")
+	
 
 @app.route("/insertRoute",methods=['POST'])
 def insertRoute():
@@ -53,8 +72,8 @@ def createAccount():
 	
 		#this is basicly sudocode at this point
 		#this us not done and written by someone who knows nothing about sql
-@app.route("/addStop",methods=['POST'])	
-def addStop():
+@app.route("/insertStop",methods=['POST'])	
+def insertStop():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
 	routeID = request.form['routeID']
@@ -120,11 +139,21 @@ def hasRide():
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-	c.execute("SELECT * FROM routes")
+	c.execute("SELECT route_ID AND time AND date FROM routes")
 	rows=c.fetchall()
+	list = ()
+	for row in rows:
+		c.execute("SELECT location FROM stops WHERE start=true AND routeID=?",row[0])
+		start = c.fetchone()
+		c.execute("SELECT location FROM stops WHERE end=true AND routeID=?",row[0])
+		end = c.fetchone()
+		dict = {"routeID":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
+		list.append(dict)
+		
 	#pretty sure this data is accessed by the column names so data[index_of_row][column_name] column names are routeid,driverid,date,time case sensitive
-	return json.dumps(rows)
+	return json.dumps(list)
 	conn.close()
+	
 if __name__=="__main__":
 
 	app.run()

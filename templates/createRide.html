@@ -1,23 +1,17 @@
-<link rel="stylesheet" href="mainPage.css">
-<div class="header">
-  <button type="submit" class="logOutButton"
-    onclick="logOut()">
-      Log Out
-  </button>
-</div>
-<form action="action_page.php">
+<link rel="stylesheet" href="/static/login.css">
+<form action="/insertRoute">
   <div class="container">
     <label for="uname"><b>Start</b></label>
     <input type="text" placeholder="Starting Point..." name="uname" required>
     <label for="uanem"><b>Destination</b></label>
     <input type="text" placeholder="Destination..." name="uname" required>
 	<label for="uanem"><b>Date</b></label>
-    <input type="date" placeholder="Date..." name="uname" required>
+    <input type="text" placeholder="Date..." name="uname" required>    
 	<label for="uanem"><b>Time</b></label>
-    <input type="time" placeholder="Time..." name="uname" required>
+    <input type="text" placeholder="Time..." name="uname" required>
   </div>
   <div class="container">
     <button type="submit">Submit Request</button>
-    <a href="/mainPage.html">Cancel</a>
+    <a href="/">Cancel</a>
   </div>
 </form>
