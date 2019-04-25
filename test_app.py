@@ -201,6 +201,21 @@ def test_add_submit():
 def test_token_invalid():
     dt = client.get('/createRide', follow_redirect = True)
     assert 'Submit Request' in dt.data
+
+#FIVE VALIDATION TEST CASES
+def test_login():
+    dt = client.get('/createUser', data=dict(
+        username='users',
+        email='ihtc@example.com',
+        password='passw0rd',
+        password2='passw0rd'
+    ),follow_redirects=True)
+    dt = client.post('/login', data=dict(
+        username='users',
+        password='passw0rd',
+    ), follow_redirects=True)
+    assertEqual(dt.status_code, 200)
+    assertIn(b'Available Rides', dt.data)
 def test_logout():
     # TODO update post data dict with correct field names
     client.post('/createUser', data=dict(
@@ -219,3 +234,28 @@ def test_logout():
     assert 'Logout' in dt.data
     dt = client.get('/riderWaiting', follow_redirect=True)
     assert 'Logout' in dt.data
+def test_createAcc(): 
+    dt = client.post('/createUser', data=dict(
+        username='username',
+        email='haha@example.com',
+        password='passw0rd',
+        password2='passw0rd'
+    ), follow_redirects=True)
+    assertEqual(dt.status_code, 200)
+    assertIn(b'Available Rides', dt.data)
+def test_addRoute():
+    dt = client.post('/createRide', data=dict(
+        start='10N',
+        end='50E',
+        date='2017-08-19',
+        time='12:00'
+    ), follow_redirects=True)
+    assertEqual(dt.status_code, 200)
+    assertIn(b'Available rides', dt.data)
+def test_addStop():
+    dt = client.post('/addStop', data=dict(
+        start='10N',
+        end='50E'
+    ))
+    assertIn(b'Submit Request', dt.data)
+    assertIn(b'Cancel', dt.data)
