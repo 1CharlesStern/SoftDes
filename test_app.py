@@ -4,6 +4,13 @@ import server
 import sqlite3
 
 client = server.app.test_client()
+dt = client.post('/createUser', data=dict(
+        username='username',
+        email='joe@example.com',
+        password='passw0rd',
+        password2='passw0rd'
+    ), follow_redirects=True)
+print(dt)
 
 #TEST LOGIN
 def test_good_redirect():
