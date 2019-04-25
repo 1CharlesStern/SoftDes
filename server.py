@@ -1,18 +1,62 @@
-from flask import Flask, render_template, json, request, make_response
+from flask import Flask, render_template, json, request, redirect, make_response, url_for
+from functools import wraps
 import sqlite3
 
 app= Flask(__name__,static_url_path='/static')
 
 DATABASE="db.sqlite"
 
+def login_required(f):
+	@wraps(f)
+	def wrap():
+		print("in the wrapper")
+		if 'username' in request.cookies:
+			user = request.cookies['username']
+			return f(user)
+		else:
+			return redirect(url_for('login'))
+	return wrap
+
 @app.route("/mainPage",methods=['GET'])
-def mainPage():
+@login_required
+def mainPage(username):
 	if request.method == 'GET':
 		resp = make_response(render_template("mainPage.html"))
 		return resp
 
+def loginInternal(username, password):
+	conn=sqlite3.connect(DATABASE)
+	c=conn.cursor()
+	c.execute("SELECT username,password FROM users WHERE username = ?",(username,))
+	userQ = c.fetchone()
+	if userQ and userQ[1] == password:
+		resp = make_response(redirect(url_for('mainPage')))
+		resp.set_cookie("username", username)
+		conn.close()
+		return (resp);
+	else:
+		resp = make_response(render_template("login.html"))
+		conn.close()
+		return resp
+
+
+@app.route("/login",methods=['GET','POST'])
+def login():
+	if request.method == 'GET':
+		if 'username' in request.cookies:
+			return redirect(url_for('mainPage'))
+		resp = make_response(render_template("login.html"))
+		return resp
+	elif request.method == 'POST':
+		username = request.form['username']
+		password = request.form['password']
+		return loginInternal(username, password)
+
+
+
 @app.route("/addStop",methods=['GET', 'POST'])
-def addStop():
+@login_required
+def addStop(username):
 	if request.method == 'GET':
 		resp = make_response(render_template("addStop.html"))
 		return resp
@@ -21,7 +65,8 @@ def addStop():
 		return resp
 
 @app.route("/createRide",methods=['GET', 'POST'])
-def createRide():
+@login_required
+def createRide(username):
 	if request.method == 'GET':
 		resp = make_response(render_template("createRide.html"))
 		return resp
@@ -39,28 +84,29 @@ def createUser():
 		c=conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
+		confirmPassword = request.form['confirmPassword']
 		email = request.form['email']
-		#query for duplicate usernames and emails
-		c.execute("SELECT username,password FROM users WHERE username = ?",username)
-		userExist =  c.fetchone()
-		if userExist:
+		if(password != confirmPassword):
 			resp = make_response(render_template("createUser.html"))
 			return resp
-
-			#if the new user is valid add them to the table
-			if username and password and email:
-				user = (username,password,email)
-				c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
-				conn.commit()
-				resp = make_response(render_template("mainPage.html"))
-				resp = resp.set_cookie(username)
-				return resp
-			else:
-				return json.dumps({'result':'there was an issue with your request'})
+		#query for duplicate usernames and emails
+		c.execute("SELECT username,password FROM users WHERE username = ?",(username,))
+		userExist = c.fetchone()
+		if not userExist and username and password and email:
+			user = (username,password,email)
+			c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
+			conn.commit()
 			conn.close()
+			print("calling internal login")
+			return loginInternal(username, password)
+		else:
+				resp = make_response(render_template("createUser.html"))
+				conn.close()
+				return resp
 
 @app.route("/riderWaiting",methods=['GET', 'POST'])
-def riderWaiting():
+@login_required
+def riderWaiting(username):
 	if request.method == 'GET':
 		resp = make_response(render_template("riderWaiting.html"))
 		return resp
@@ -166,38 +212,6 @@ def insertStop():
 			return json.dumps({'result':'there was an issue with your request'})
 		conn.close()
 
-			#this is basicly sudocode at this point
-			#this us not done and written by someone who knows nothing about sql
-@app.route("/login",methods=['GET','POST'])
-def login():
-	if request.method == 'GET':
-		resp = make_response(render_template("login.html"))
-		return resp
-	elif request.method == 'POST':
-		conn=sqlite3.connect(DATABASE)
-		c=conn.cursor()
-		username = request.form['username']
-		password = request.form['password']
-		print(username)
-		print(password)
-			#query for if user exist
-		c.execute("SELECT username,password FROM users WHERE username = ?",(username,))
-		userQ = c.fetchone()
-		if userQ:
-			if userQ[1] == password:
-				resp = make_response(render_template("mainPage.html"))
-				resp.set_cookie(username)
-				return resp
-			else:
-				resp = make_response(render_template("login.html"))
-				return resp
-				conn.close()
-		else:
-			resp = make_response(render_template("login.html"))
-			return resp
-			conn.close()
-		#this is basicly sudocode at this point
-		#this us not done and written by someone who knows nothing about sql
 @app.route("/hasRide",methods=['GET'])
 def hasRide():
 	conn=sqlite3.connect(DATABASE)
