@@ -39,7 +39,7 @@ def insertRoute():
 	start = request.form['start']
 	end = request.form['end']
 	
-	routeStops(routeid driverID, start, end)
+	routeStops(routeid, driverid, start, end)
 	
 	if routeid and driverid and date and time:
 		route=(routeid, driverid , date, time)
@@ -80,7 +80,7 @@ def createAccount():
 	#query for duplicate usernames and emails
 	c.execute("SELECT username,password FROM users WHERE username = ?",username)
 	userExist =  c.fetchone()
-	if userExist
+	if userExist:
 		resp = make_response(render_template("createUser.html"))
 		return resp	
 	
