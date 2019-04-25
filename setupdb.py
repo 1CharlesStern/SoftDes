@@ -3,7 +3,7 @@ DATABASE="db.sqlite"
 
 createdb="""CREATE TABLE IF NOT EXISTS routes (
 		routeid integer PRIMARY KEY,
-		driverid integer NOT NULL,
+		driverid text NOT NULL,
 		date text,
 		time text
 		);"""
@@ -15,9 +15,9 @@ createuserstable="""CREATE TABLE IF NOT EXISTS users (
 		);"""
 		
 createstopstable="""CREATE TABLE IF NOT EXISTS stops (
-		route_ID text PRIMARY KEY,
+		routeid text PRIMARY KEY,
 		location text NOT NULL,
-		rider_ID text NOT NULL,
+		riderid text NOT NULL,
 		start bool,
 		end bool,
 		);"""

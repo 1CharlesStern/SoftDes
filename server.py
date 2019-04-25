@@ -1,14 +1,15 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, make_response
 import sqlite3
 
 app= Flask(__name__,static_url_path='/static')
-
 
 DATABASE="db.sqlite"
 
 @app.route("/")
 def main():
-	return render_template("mainPage.html")
+	resp = make_response(render_template("mainPage.html"))
+	resp.set_cookie('username', 'I am cookie')
+	return resp
 	
 @app.route("/createRide")
 def createRideP():
@@ -32,10 +33,14 @@ def insertRoute():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
 	#get values from form by keyname
-	routeid=request.form['routeID']
 	driverid=request.form['driverID']
 	date=request.form['date']
 	time= request.form['time']
+	start = request.form['start']
+	end = request.form['end']
+	
+	#routeStops(routeid driverID, start, end)
+	
 	if routeid and driverid and date and time:
 		route=(routeid, driverid , date, time)
 		c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?)",route)
@@ -45,6 +50,9 @@ def insertRoute():
 	else:
 		return json.dumps({'result':'there was an issue with your request'})
 	conn.close()
+
+#def routeStops(routeid, username, start , end):
+	
 	
 	#this is basicly sudocode at this point
 	#this us not done and written by someone who knows nothing about sql
@@ -56,8 +64,8 @@ def createAccount():
 	password = request.form['password']
 	email = request.form['email']
 	#query for duplicate usernames and emails
-	invalidUser = c.execute("Select username From users Where username Like ?",username)
-	invalidEmail = c.execute("Select username From users Where email Like ?",email)
+	invalidUser = c.execute("SELECT username FROM users WHERE username = ?",username)
+	invalidEmail = c.execute("SELECT username FROM users WHERE email = ?",email)
 	
 	#if the new user is valid add them to the table
 	if username and password and email:
@@ -85,8 +93,8 @@ def insertStop():
 	if routeID and start and end and riderID:
 		startStop = (routeID,start,riderID)
 		endStop = (routeID,end,riderID)
-		c.execute("INSERT INTO stops(route_ID,location,rider_ID)VALUES(?,?,?)",startStop)
-		c.execute("INSERT INTO stops(route_ID,location,rider_ID)VALUES(?,?,?)",endStop)
+		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
+		c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
 		conn.commit()
 		return json.dumps({'result':'all fields correct, inserted into db'})
 	else:
@@ -103,13 +111,13 @@ def login():
 	password = request.form['password']
 	
 	#query for if user exist
-	invalidUser = c.execute("Select username From users Where username Like ?",username)
+	userQ = c.execute("SELECT username FROM users WHERE username = ?",username)
 	
 	#check password
-	invalidPass = c.execute("Select password From users Where username Like ?",password)
+	passQ = c.execute("SELECT password FROM users WHERE username = ?",password)
 
 	#if everything is good log them in 
-	if invalidUser and invalidPass:
+	if user == username and passQ == password:
 		return json.dumps({'result':'all fields correct, inserted into db'})
 	else:
 		return json.dumps({'result':'there was an issue with your request'})
@@ -117,13 +125,13 @@ def login():
 
 	#this is basicly sudocode at this point
 	#this us not done and written by someone who knows nothing about sql
-@app.route("/hasRide",methods=['POST'])		
+@app.route("/hasRide",methods=['POST','GET'])		
 def hasRide():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
 	
 	username = request.form['username']
-	currentRide = c.execute("Select rider_ID From stops Where rider_ID Like ?",username)
+	currentRide = c.execute("SELECT riderid FROM stops WHERE riderid=?",username)
 	
 	#need to return true if currentRide is not false 
 	#if you couldnt tell I have no idea how to actuall code this stuff.
@@ -135,17 +143,17 @@ def hasRide():
 
 
 
-@app.route("/allDrives")
+@app.route("/allDrives", methods=['POST','GET'])
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-	c.execute("SELECT route_ID AND time AND date FROM routes")
+	c.execute("SELECT routeid AND time AND date FROM routes")
 	rows=c.fetchall()
 	list = ()
 	for row in rows:
-		c.execute("SELECT location FROM stops WHERE start=true AND routeID=?",row[0])
+		c.execute("SELECT location FROM stops WHERE start=true AND routeid=?",row[0])
 		start = c.fetchone()
-		c.execute("SELECT location FROM stops WHERE end=true AND routeID=?",row[0])
+		c.execute("SELECT location FROM stops WHERE end=true AND routeid=?",row[0])
 		end = c.fetchone()
 		dict = {"routeID":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
 		list.append(dict)
