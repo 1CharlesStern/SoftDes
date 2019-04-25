@@ -137,14 +137,46 @@ def test_submit_but():
     dt = client.get('/createRide')
     assert 'Submit Request' in dt.data
 #TEST ADD STOP
-def test_location_invalid():
-    return
+def test_start_location_invalid():
+    dt = client.post('/createRide', data=dict(
+        start='torg',
+        end='10W',
+        date='2019-07-22',
+        time='14:20'
+    ),follow_redirects=True)
+    assertEqual(dt.status_code, 400)
+def test_end_location_invalid():
+    dt = client.post('/createRide', data=dict(
+        start='10N',
+        end='mcb',
+        date='2019-07-21',
+        time='10:20'
+    ),follow_redirects=True)
+    assertEqual(dt.status_code, 400)
 def test_locations_equal():
-    return
+    dt = client.post('/createRide', data=dict(
+        start='10N',
+        end='10N',
+        date='2019-08-22',
+        time='13:30'
+    ),follow_redirects=True)
+    assertEqual(dt.status_code, 400)
 def test_add_cancel():
-    return
+    dt = client.post('/createRide', data=dict(
+        start='10N',
+        end='50E',
+        date='2017-08-19',
+        time='12:00'
+    ))
+    assertIn(b'Cancel', dt.data)
 def test_add_submit():
-    return
+    dt = client.post('/createRide', data=dict(
+        start='10N',
+        end='50E',
+        date='2017-08-19',
+        time='12:00'
+    ))
+    assertIn(b'Submit', dt.data)
 #TEST LOGOUT
 def test_token_invalid():
     return
