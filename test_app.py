@@ -2,7 +2,7 @@
 #import pytest
 import server
 import sqlite3
-
+from setupdb import dbSetup
 #TODO: Determine if database is purged between tests.  Assuming that it is for now.
 
 client = server.app.test_client()
@@ -133,7 +133,7 @@ def test_create_cancel():
     assert 'Cancel' in dt.data
 #The User's record should appear in the database
 def test_new_db_record():
-    conn = squlite3.connect('db.squlite')
+    conn = squlite3.connect('db.sqlite')
     cur = conn.cursor()
     cur.execute('SELECT * FROM users')
     assert 'username' in cur.fetchone()
@@ -320,3 +320,11 @@ def test_addStop():
     ))
     assertIn(b'Submit Request', dt.data)
     assertIn(b'Cancel', dt.data)
+	
+def resetDB():
+	conn = squlite3.connect('db.sqlite')
+    cur = conn.cursor()
+    cur.execute('DROP TABLE users')
+	cur.execute('DROP TABLE routes')
+	cur.execute('DROP TABLE stops')
+	dbSetup()

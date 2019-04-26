@@ -267,23 +267,30 @@ def insertStop():
 		return json.dumps({'result':'there was an issue with your request'})
 	conn.close()
 
-@app.route("/hasRide",methods=['GET'])
+@app.route("/hasRide",methods=['POST'])
 def hasRide():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
 
 	username = request.form['username']
-	c.execute("SELECT riderid FROM stops WHERE riderid=?",username)
+	c.execute("SELECT riderid FROM stops WHERE riderid=?",(username,))
 	currentRide = c.fetchone()
-	#need to return True if currentRide is not false
-	#if you couldnt tell I have no idea how to actuall code this stuff.
 	if currentRide:
-		return True
+		return json.dumps({'result':'true'})
 	else:
-		return False;
+		return json.dumps({'result':'false'})
 	conn.close()
 
+@app.route("/cancelRide",methods=['POST'])
+def cancelRide():
+	conn=sqlite3.connect(DATABASE)
+	c=conn.cursor()
 
+	username = request.form['username']
+	c.execute("DELETE FROM stops WHERE riderid=?",(username,))
+	currentRide = c.fetchone()
+	return json.dumps({'result':'success'})
+	conn.close()
 
 @app.route("/allDrives", methods=['POST','GET'])
 def allDrives():
