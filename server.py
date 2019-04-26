@@ -289,6 +289,7 @@ def cancelRide(username):
 	print(username)
 	c.execute("DELETE FROM stops WHERE riderid=?",(username,))
 	currentRide = c.fetchone()
+	conn.commit()
 	conn.close()
 	return redirect(url_for('mainPage'))
 

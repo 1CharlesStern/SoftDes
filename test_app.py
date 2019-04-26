@@ -362,6 +362,7 @@ def resetDB():
     cur.execute('DROP TABLE users')
     cur.execute('DROP TABLE routes')
     cur.execute('DROP TABLE stops')
+	conn.commit()
     conn.close()
     dbSetup()
 
