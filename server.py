@@ -136,7 +136,9 @@ def createUser():
 		#query for duplicate usernames and emails
 		c.execute("SELECT username,password FROM users WHERE username = ?",(username,))
 		userExist = c.fetchone()
-		if not userExist and username and password and email:
+		c.execute("SELECT username,password FROM users WHERE email = ?",(email,))
+		emailExist = c.fetchone()
+		if not userExist and not emailExist and username and password and email:
 			user = (username,password,email)
 			c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
 			conn.commit()
@@ -144,9 +146,8 @@ def createUser():
 			print("calling internal login")
 			return loginInternal(username, password)
 		else:
-				resp = make_response(render_template("createUser.html"))
-				conn.close()
-				return resp
+			resp = make_response(redirect(url_for('createUser')), 400)
+			return resp
 
 @app.route("/riderWaiting",methods=['GET', 'POST'])
 @login_required

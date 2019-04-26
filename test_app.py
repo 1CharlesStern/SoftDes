@@ -354,7 +354,7 @@ class testAll(unittest.TestCase):
         ))
         self.assertIn(b'Submit Request', dt.data)
         self.assertIn(b'Cancel', dt.data)
-	
+
 def resetDB():
     dbSetup()
     conn = sqlite3.connect('db.sqlite')
@@ -362,7 +362,7 @@ def resetDB():
     cur.execute('DROP TABLE users')
     cur.execute('DROP TABLE routes')
     cur.execute('DROP TABLE stops')
-	conn.commit()
+    conn.commit()
     conn.close()
     dbSetup()
 
