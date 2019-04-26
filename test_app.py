@@ -245,12 +245,12 @@ class testAll(unittest.TestCase):
     # assert submit button exists
     def test_add_submit(self):
         client.post('/createUser', data=dict(
-            username='username',
-            email='joe@example.com',
-            password='passw0rd',
-            confirmPassword='passw0rd'
+            username='test_add_submit',
+            email='test_add_submit@example.com',
+            password='test_add_submit',
+            confirmPassword='test_add_submit'
         ), follow_redirects=True)
-        dt = client.post('/addStop', data=dict(
+        dt = client.get('/addStop', data=dict(
             start='10N',
             end='50E',
             date='2017-08-19',
