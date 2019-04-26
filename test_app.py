@@ -21,7 +21,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/login', data=dict(
             username='username',
@@ -43,7 +43,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         assert b'username' in dt.data
 
@@ -53,7 +53,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='XD',
             password='pass',
-            password2='pass'
+            confirmPassword='pass'
         ), follow_redirects=True)
         assert b'username' not in dt.data
 
@@ -70,13 +70,13 @@ class testAll(unittest.TestCase):
             username='alreadyTakenUsername',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/createUser', data=dict(
             username='alreadyTakenUsername',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 400)
 
@@ -87,13 +87,13 @@ class testAll(unittest.TestCase):
             username='alreadyTakenUsername',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/createUser', data=dict(
             username='username',
             email='alreadyTakenUsername@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 400)
 
@@ -104,7 +104,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='invalidEmail',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 400)
 
@@ -115,7 +115,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='pass',
-            password2='pass'
+            confirmPassword='pass'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 400)
 
@@ -126,7 +126,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd2',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 400)
 
@@ -137,7 +137,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 200)
 
@@ -219,6 +219,12 @@ class testAll(unittest.TestCase):
 
     # assert submit button exists
     def test_submit_but(self):
+        dt1 = client.post('/createUser', data=dict(
+            username='username',
+            email='joe@example.com',
+            password='passw0rd',
+            confirmPassword='passw0rd'
+        ), follow_redirects=True)
         dt = client.get('/createRide', follow_redirects=True)
         assert b'Submit Request' in dt.data
 
@@ -259,7 +265,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/addStop', data=dict(
             start='10N',
@@ -275,7 +281,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/addStop', data=dict(
             start='10N',
@@ -285,19 +291,13 @@ class testAll(unittest.TestCase):
         ))
         self.assertIn(b'Submit', dt.data)
 
-    # TEST LOGOUT
-    # token should no longer be valid
-    def test_token_invalid(self):
-        dt = client.get('/createRide', follow_redirects=True)
-        assert b'Submit Request' in dt.data
-
     # FIVE VALIDATION TEST CASES
     def test_login(self):
-        dt = client.get('/createUser', data=dict(
+        dt = client.post('/createUser', data=dict(
             username='users',
             email='ihtc@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/login', data=dict(
             username='users',
@@ -314,7 +314,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='joe@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.get('/insertRoute', follow_redirects=True)
         assert b'Logout' in dt.data
@@ -332,7 +332,7 @@ class testAll(unittest.TestCase):
             username='username',
             email='haha@example.com',
             password='passw0rd',
-            password2='passw0rd'
+            confirmPassword='passw0rd'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 200)
         self.assertIn(b'Available Rides', dt.data)
