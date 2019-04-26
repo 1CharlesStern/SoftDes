@@ -57,6 +57,8 @@ class testAll(unittest.TestCase):
 
     # assert create account button exists
     def test_login_create(self):
+        resetDB()
+        client = server.app.test_client()
         dt = client.get('/login', follow_redirects=True)
         assert b'Login' in dt.data
 
