@@ -85,13 +85,13 @@ class testAll(unittest.TestCase):
         # TODO update post data dict with correct field names
         dt = client.post('/createUser', data=dict(
             username='alreadyTakenUsername',
-            email='joe@example.com',
+            email='alreadyTakenEmail@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/createUser', data=dict(
             username='username',
-            email='alreadyTakenUsername@example.com',
+            email='alreadyTakenEmail@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
