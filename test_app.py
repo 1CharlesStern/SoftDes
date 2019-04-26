@@ -303,6 +303,12 @@ class testAll(unittest.TestCase):
         self.assertIn(b'Available Rides', dt.data)
 
     def test_addRoute(self):
+        client.post('/createUser', data=dict(
+            username='test_addRoute',
+            email='test_addRoute@example.com',
+            password='test_addRoute',
+            confirmPassword='test_addRoute'
+        ))
         dt = client.post('/createRide', data=dict(
             start='10N',
             end='50E',
@@ -310,7 +316,7 @@ class testAll(unittest.TestCase):
             time='12:00'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 200)
-        self.assertIn(b'Available rides', dt.data)
+        self.assertIn(b'Available Rides', dt.data)
 
     def test_addStop(self):
         client.post('/createUser', data=dict(
