@@ -287,10 +287,10 @@ class testAll(unittest.TestCase):
 
     def test_createAcc(self):
         dt = client.post('/createUser', data=dict(
-            username='username',
-            email='haha@example.com',
-            password='passw0rd',
-            confirmPassword='passw0rd'
+            username='test_createAccUsername',
+            email='testCreateAccUsername@example.com',
+            password='testCreateAcc',
+            confirmPassword='testCreateAcc'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 200)
         self.assertIn(b'Available Rides', dt.data)
