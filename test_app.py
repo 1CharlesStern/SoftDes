@@ -12,8 +12,6 @@ class testAll(unittest.TestCase):
     def setUpClass(cls):
         resetDB()
 
-
-
     # TEST LOGIN
     # "Login" button should take the user to the main page if credentials are correct
     def test_good_redirect(self):
@@ -85,13 +83,13 @@ class testAll(unittest.TestCase):
         # TODO update post data dict with correct field names
         dt = client.post('/createUser', data=dict(
             username='alreadyTakenUsername',
-            email='joe@example.com',
+            email='alreadyTakenEmail@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
         dt = client.post('/createUser', data=dict(
             username='username',
-            email='alreadyTakenUsername@example.com',
+            email='alreadyTakenEmail@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
@@ -159,26 +157,6 @@ class testAll(unittest.TestCase):
         assert b'username' in cur.fetchone()
 
     # TEST INSERT RIDE
-    # User should recieve an error if trying to enter an invalid start location
-    def test_bad_start(self):
-        dt = client.post('/createRide', data=dict(
-            start='your mom',
-            end='20S',
-            date='2018-07-22',
-            time='10:00'
-        ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
-
-    # User should recieve an error if trying to enter an invalid destination
-    def test_bad_end(self):
-        dt = client.post('/createRide', data=dict(
-            start='10W',
-            end='gay',
-            date='2018-07-22',
-            time='10:00'
-        ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
-
     # User should recieve an error if the start and destination are identical
     def test_locations_different(self):
         # TODO update post data dict with correct field names
@@ -229,26 +207,6 @@ class testAll(unittest.TestCase):
         assert b'Submit Request' in dt.data
 
     # TEST ADD STOP
-    # User should recieve an error if trying to enter an invalid starting location
-    def test_start_location_invalid(self):
-        dt = client.post('/addStop', data=dict(
-            start='torg',
-            end='10W',
-            date='2019-07-22',
-            time='14:20'
-        ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
-
-    # User should recieve an error if trying to enter an invalid destination
-    def test_end_location_invalid(self):
-        dt = client.post('/addStop', data=dict(
-            start='10N',
-            end='mcb',
-            date='2019-07-21',
-            time='10:20'
-        ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
-
     # User should recieve an error if the start and destination are identical
     def test_locations_equal(self):
         dt = client.post('/addStop', data=dict(
