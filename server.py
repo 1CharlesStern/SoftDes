@@ -281,16 +281,16 @@ def hasRide():
 		return json.dumps({'result':'false'})
 	conn.close()
 
-@app.route("/cancelRide",methods=['POST'])
-def cancelRide():
+@app.route("/cancelRide",methods=['GET'])
+@login_required
+def cancelRide(username):
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-
-	username = request.form['username']
+	print(username)
 	c.execute("DELETE FROM stops WHERE riderid=?",(username,))
 	currentRide = c.fetchone()
-	return json.dumps({'result':'success'})
 	conn.close()
+	return redirect(url_for('mainPage'))
 
 @app.route("/allDrives", methods=['POST','GET'])
 def allDrives():
