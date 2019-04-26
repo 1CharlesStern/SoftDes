@@ -57,6 +57,8 @@ class testAll(unittest.TestCase):
 
     # assert create account button exists
     def test_login_create(self):
+        resetDB()
+        client = server.app.test_client()
         dt = client.get('/login', follow_redirects=True)
         assert b'Login' in dt.data
 
@@ -151,10 +153,17 @@ class testAll(unittest.TestCase):
 
     # The User's record should appear in the database
     def test_new_db_record(self):
+        client.post('/createUser', data=dict(
+            username='test_create_main_usernameasjknfa',
+            email='testasdad_create_main_username@example.com',
+            password='passw0rd',
+            confirmPassword='passw0rd'
+        ), follow_redirects=True)
         conn = sqlite3.connect('db.sqlite')
         cur = conn.cursor()
         cur.execute('SELECT * FROM users')
-        assert b'username' in cur.fetchone()
+        F = cur.fetchall()
+        assert len(F) > 0
 
     # TEST INSERT RIDE
     # User should recieve an error if the start and destination are identical
@@ -274,16 +283,14 @@ class testAll(unittest.TestCase):
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
-        dt = client.get('/insertRoute', follow_redirects=True)
-        assert b'Logout' in dt.data
         dt = client.get('/mainPage', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
         dt = client.get('/addStop', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
         dt = client.get('/createRide', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
         dt = client.get('/riderWaiting', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
 
     def test_createAcc(self):
         dt = client.post('/createUser', data=dict(
