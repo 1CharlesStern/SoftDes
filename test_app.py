@@ -195,9 +195,9 @@ class testAll(unittest.TestCase):
             start='10W',
             end='20S',
             date='2018-07-22',
-            time='H'
+            time='20:20'
         ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
+        self.assertEqual(dt.status_code, 200)
 
     # assert cancel button exists
     def test_cancel_but(self):
