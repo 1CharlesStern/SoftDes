@@ -1,5 +1,5 @@
 #SET UP
-#import pytest
+import pytest
 import server
 import sqlite3
 from setupdb import dbSetup
@@ -48,7 +48,7 @@ def test_bad_getToken():
     assert 'username' not in dt.data
 #assert create account button exists
 def test_login_create():
-    dt = client.get('/login', follow_redirect=True)
+    dt = client.get('/login', follow_redirects=True)
     assert 'Login' in dt.data
 #TEST CREATE ACCOUNT
 #User should recieve an error if trying to make an account that has an occupied username
@@ -256,7 +256,6 @@ def test_add_submit():
 #token should no longer be valid
 def test_token_invalid():
     dt = client.get('/createRide', follow_redirect = True)
-<<<<<<< Updated upstream
     assert 'Submit Request' in dt.data
 
 #FIVE VALIDATION TEST CASES
@@ -273,10 +272,8 @@ def test_login():
     ), follow_redirects=True)
     assertEqual(dt.status_code, 200)
     assertIn(b'Available Rides', dt.data)
-=======
     assert 'Submit Request' not in dt.data
 #logout should appear on all pages once logged in
->>>>>>> Stashed changes
 def test_logout():
     # TODO update post data dict with correct field names
     client.post('/createUser', data=dict(
@@ -285,15 +282,15 @@ def test_logout():
         password='passw0rd',
         password2='passw0rd'
     ), follow_redirects=True)
-    dt = client.get('/insertRoute', follow_redirect=True)
+    dt = client.get('/insertRoute', follow_redirects=True)
     assert 'Logout' in dt.data
-    dt = client.get('/mainPage', follow_redirect=True)
+    dt = client.get('/mainPage', follow_redirects=True)
     assert 'Logout' in dt.data
-    dt = client.get('/addStop', follow_redirect=True)
+    dt = client.get('/addStop', follow_redirects=True)
     assert 'Logout' in dt.data
-    dt = client.get('/createRide', follow_redirect=True)
+    dt = client.get('/createRide', follow_redirects=True)
     assert 'Logout' in dt.data
-    dt = client.get('/riderWaiting', follow_redirect=True)
+    dt = client.get('/riderWaiting', follow_redirects=True)
     assert 'Logout' in dt.data
 def test_createAcc(): 
     dt = client.post('/createUser', data=dict(
@@ -322,9 +319,9 @@ def test_addStop():
     assertIn(b'Cancel', dt.data)
 	
 def resetDB():
-	conn = squlite3.connect('db.sqlite')
+    conn = squlite3.connect('db.sqlite')
     cur = conn.cursor()
     cur.execute('DROP TABLE users')
-	cur.execute('DROP TABLE routes')
-	cur.execute('DROP TABLE stops')
-	dbSetup()
+    cur.execute('DROP TABLE routes')
+    cur.execute('DROP TABLE stops')
+    dbSetup()
