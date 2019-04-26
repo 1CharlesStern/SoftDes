@@ -130,8 +130,9 @@ def createUser():
 		password = request.form['password']
 		confirmPassword = request.form['confirmPassword']
 		email = request.form['email']
-		if(password != confirmPassword):
-			resp = make_response(render_template("createUser.html"))
+
+		if(len(password) < 8 or password != confirmPassword):
+			resp = make_response(redirect(url_for('createUser')), 400)
 			return resp
 		#query for duplicate usernames and emails
 		c.execute("SELECT username,password FROM users WHERE username = ?",(username,))
