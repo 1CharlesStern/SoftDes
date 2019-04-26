@@ -138,7 +138,7 @@ def createUser():
 		userExist = c.fetchone()
 		c.execute("SELECT username,password FROM users WHERE email = ?",(email,))
 		emailExist = c.fetchone()
-		if not userExist and not emailExist and username and password and email:
+		if "@" in email and not userExist and not emailExist and username and password and email:
 			user = (username,password,email)
 			c.execute("INSERT INTO users(username,password,email)VALUES(?,?,?)",user)
 			conn.commit()
