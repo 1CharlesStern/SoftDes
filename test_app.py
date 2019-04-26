@@ -306,12 +306,20 @@ class testAll(unittest.TestCase):
         self.assertIn(b'Available rides', dt.data)
 
     def test_addStop(self):
+        client.post('/createUser', data=dict(
+            username='test_addStop',
+            email='test_addStop@example.com',
+            password='test_addStop',
+            confirmPassword='test_addStop'
+        ))
+        client.set_cookie('localhost', 'routeid', 'test_addStop5')
         dt = client.post('/addStop', data=dict(
+            username='test_createAccUsername',
+            routeid='test_createAccUsername',
             start='10N',
             end='50E'
         ))
-        self.assertIn(b'Submit Request', dt.data)
-        self.assertIn(b'Cancel', dt.data)
+        self.assertIn(b'riderWaiting', dt.data)
 
 def resetDB():
     dbSetup()
