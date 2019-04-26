@@ -43,7 +43,7 @@ class testAll(unittest.TestCase):
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
-        assert b'username' in dt.data
+        assert b'mainPage' in dt.data or b'Redirect' in dt.data
 
     # When a user logs in with incorrect credentials, they should not recieve a token
     def test_bad_getToken(self):
