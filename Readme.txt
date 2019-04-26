@@ -2,7 +2,7 @@ Demo Application created by Charles Stern, Griff Baily, Michael Severance, Sheng
 Created for CS3704 Intermediate Software Design.
 
 To run tests:
-"python -m pytest test_app.py"
+"python test_app.py"
 
 Dependencies:
 Python 3.7+
