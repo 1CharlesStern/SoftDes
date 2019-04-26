@@ -151,10 +151,17 @@ class testAll(unittest.TestCase):
 
     # The User's record should appear in the database
     def test_new_db_record(self):
+        client.post('/createUser', data=dict(
+            username='test_create_main_usernameasjknfa',
+            email='testasdad_create_main_username@example.com',
+            password='passw0rd',
+            confirmPassword='passw0rd'
+        ), follow_redirects=True)
         conn = sqlite3.connect('db.sqlite')
         cur = conn.cursor()
         cur.execute('SELECT * FROM users')
-        assert b'username' in cur.fetchone()
+        F = cur.fetchall()
+        assert len(F) > 0
 
     # TEST INSERT RIDE
     # User should recieve an error if the start and destination are identical
