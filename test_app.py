@@ -274,16 +274,14 @@ class testAll(unittest.TestCase):
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
-        dt = client.get('/insertRoute', follow_redirects=True)
-        assert b'Logout' in dt.data
         dt = client.get('/mainPage', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
         dt = client.get('/addStop', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
         dt = client.get('/createRide', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
         dt = client.get('/riderWaiting', follow_redirects=True)
-        assert b'Logout' in dt.data
+        self.assertIn(b'Log Out', dt.data)
 
     def test_createAcc(self):
         dt = client.post('/createUser', data=dict(
