@@ -239,7 +239,7 @@ class testAll(unittest.TestCase):
             end='50E',
             date='2017-08-19',
             time='12:00'
-        ))
+        ),follow_redirects=True)
         self.assertIn(b'Cancel', dt.data)
 
     # assert submit button exists
