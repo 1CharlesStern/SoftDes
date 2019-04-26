@@ -47,7 +47,7 @@ class testAll(unittest.TestCase):
 
     # When a user logs in with incorrect credentials, they should not recieve a token
     def test_bad_getToken(self):
-        client.post('/createUser', data=dict(
+        dt = client.post('/createUser', data=dict(
             username='username',
             email='XD',
             password='pass',
