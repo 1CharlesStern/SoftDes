@@ -12,8 +12,6 @@ class testAll(unittest.TestCase):
     def setUpClass(cls):
         resetDB()
 
-
-
     # TEST LOGIN
     # "Login" button should take the user to the main page if credentials are correct
     def test_good_redirect(self):
@@ -159,26 +157,6 @@ class testAll(unittest.TestCase):
         assert b'username' in cur.fetchone()
 
     # TEST INSERT RIDE
-    # User should recieve an error if trying to enter an invalid start location
-    def test_bad_start(self):
-        dt = client.post('/createRide', data=dict(
-            start='your mom',
-            end='20S',
-            date='2018-07-22',
-            time='10:00'
-        ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
-
-    # User should recieve an error if trying to enter an invalid destination
-    def test_bad_end(self):
-        dt = client.post('/createRide', data=dict(
-            start='10W',
-            end='gay',
-            date='2018-07-22',
-            time='10:00'
-        ), follow_redirects=True)
-        self.assertEqual(dt.status_code, 400)
-
     # User should recieve an error if the start and destination are identical
     def test_locations_different(self):
         # TODO update post data dict with correct field names
