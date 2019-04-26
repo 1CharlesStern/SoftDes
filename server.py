@@ -107,7 +107,7 @@ def createRide(username):
 			if not idExistsAlready:
 				loop = False
 		print(routeid);
-		if routeid and driverid and date and time:
+		if routeid and driverid and date and time and (start!=end):
 			routeStops(routeid, driverid, start, end)
 			route=(routeid, driverid , date, time)
 			c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?,?)",route)
@@ -115,7 +115,8 @@ def createRide(username):
 			#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
 			return redirect(url_for('mainPage'))
 		else:
-			return redirect(url_for('createRide'))
+			resp = make_response(redirect(url_for('mainPage')), 400)
+			return resp
 		conn.close()
 
 @app.route("/createUser",methods=['GET', 'POST'])
@@ -175,14 +176,15 @@ def insertRoute(user):
 		end = request.form['end']
 
 		routeStops(routeid, driverid, start, end)
-		if routeid and driverid and date and time:
+		if routeid and driverid and date and time and (start!=end):
 			route=(routeid, driverid , date, time)
 			c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?)",route)
 			conn.commit()
 			#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
 			return json.dumps({'result':'all fields correct, inserted into db'})
 		else:
-			return json.dumps({'result':'there was an issue with your request'})
+			resp = make_response(redirect(url_for('/mainPage')), 400)
+			return resp
 		conn.close()
 def generateUniqueStopId(c):
 	loop = True
