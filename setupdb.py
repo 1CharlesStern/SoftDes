@@ -15,11 +15,12 @@ createuserstable="""CREATE TABLE IF NOT EXISTS users (
 		);"""
 
 createstopstable="""CREATE TABLE IF NOT EXISTS stops (
-		routeid text PRIMARY KEY,
+		stopid integer PRIMARY KEY,
+		routeid integer NOT NULL,
 		location text NOT NULL,
 		riderid text NOT NULL,
-		start bool,
-		end bool
+		start text,
+		end text
 		);"""
 
 def dbSetup():

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, json, request, redirect, make_response, url_for
 from functools import wraps
 import sqlite3
+import uuid
 
 app= Flask(__name__,static_url_path='/static')
 
@@ -61,8 +62,25 @@ def addStop(username):
 		resp = make_response(render_template("addStop.html"))
 		return resp
 	elif request.method == 'POST':
-		resp = make_response(render_template("addStop.html"))
-		return resp
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		routeid = request.cookies['routeid']
+		start = request.form['start']
+		end = request.form['end']
+		riderID = username
+			#add stops to table
+		if routeid and start and end and riderID:
+			stopid = generateUniqueStopId(c)
+			startStop = (stopid, routeid,start,riderID)
+			c.execute("INSERT INTO stops(stopid, routeid,location,riderid)VALUES(?,?,?,?)",startStop)
+			stopid = generateUniqueStopId(c)
+			endStop = (stopid,routeid,end,riderID)
+			c.execute("INSERT INTO stops(stopid, routeid,location,riderid)VALUES(?,?,?,?)",endStop)
+			conn.commit()
+			return redirect(url_for('riderWaiting'))
+		else:
+			return redirect(url_for('addStop'))
+
 
 @app.route("/createRide",methods=['GET', 'POST'])
 @login_required
@@ -71,8 +89,34 @@ def createRide(username):
 		resp = make_response(render_template("createRide.html"))
 		return resp
 	elif request.method == 'POST':
-		resp = make_response(render_template("createRide.html"))
-		return resp
+		conn=sqlite3.connect(DATABASE)
+		c=conn.cursor()
+		#get values from form by keyname
+		driverid=username
+		date=request.form['date']
+		time= request.form['time']
+		start = request.form['start']
+		end = request.form['end']
+		loop = True
+		routeid = 0
+
+		while(loop):
+			routeid = uuid.uuid1().int>>120
+			c.execute("SELECT routeid FROM routes WHERE routeid = ?",(routeid,))
+			idExistsAlready = c.fetchone()
+			if not idExistsAlready:
+				loop = False
+		print(routeid);
+		if routeid and driverid and date and time:
+			routeStops(routeid, driverid, start, end)
+			route=(routeid, driverid , date, time)
+			c.execute("INSERT INTO routes(routeid,driverid,date,time)VALUES(?,?,?,?)",route)
+			conn.commit()
+			#access in html side using the json response object and by accessing key 'result'   ex. data['result'] should give the below message
+			return redirect(url_for('mainPage'))
+		else:
+			return redirect(url_for('createRide'))
+		conn.close()
 
 @app.route("/createUser",methods=['GET', 'POST'])
 def createUser():
@@ -115,7 +159,7 @@ def riderWaiting(username):
 		return resp
 
 @app.route("/insertRoute",methods=['GET','POST'])
-def insertRoute():
+def insertRoute(user):
 	if request.method == 'GET':
 		resp = make_response(render_template("insertRoute.html"))
 		return resp
@@ -139,6 +183,17 @@ def insertRoute():
 		else:
 			return json.dumps({'result':'there was an issue with your request'})
 		conn.close()
+def generateUniqueStopId(c):
+	loop = True
+	stopid = 0
+	while(loop):
+		stopid = uuid.uuid1().int>>120
+		c.execute("SELECT stopid FROM stops WHERE stopid = ?",(stopid,))
+		idExistsAlready = c.fetchone()
+		if not idExistsAlready:
+			loop = False
+
+	return stopid
 
 def routeStops(routeid, username, start , end):
 	conn=sqlite3.connect(DATABASE)
@@ -146,10 +201,12 @@ def routeStops(routeid, username, start , end):
 
 	#add stops to table
 	if routeid and start and end and username:
-		startStop = (routeid,start,username,true)
-		endStop = (routeid,end,username,true)
-		c.execute("INSERT INTO stops(routeid,location,riderid,start)VALUES(?,?,?)",startStop)
-		c.execute("INSERT INTO stops(routeid,location,riderid,end)VALUES(?,?,?)",endStop)
+		stopid = generateUniqueStopId(c)
+		startStop = (stopid, routeid,start,username,"True")
+		c.execute("INSERT INTO stops(stopid, routeid,location,riderid,start)VALUES(?,?,?,?,?)",startStop)
+		stopid = generateUniqueStopId(c)
+		endStop = (stopid, routeid,end,username,"True")
+		c.execute("INSERT INTO stops(stopid, routeid,location,riderid,end)VALUES(?,?,?,?,?)",endStop)
 		conn.commit()
 		return json.dumps({'result':'all fields correct, inserted into db'})
 	else:
@@ -188,29 +245,27 @@ def createAccount():
 
 			#this is basicly sudocode at this point
 			#this us not done and written by someone who knows nothing about sql
-@app.route("/insertStop",methods=['GET','POST'])
+@app.route("/insertStop",methods=['POST'])
 def insertStop():
-	if request.method == 'GET':
-		resp = make_response(render_template("insertStop.html"))
-		return resp
-	elif request.method == 'POST':
-		conn=sqlite3.connect(DATABASE)
-		c=conn.cursor()
-		routeid = request.form['routeid']
-		start = request.form['start']
-		end = request.form['end']
-		riderID = request['username']
-			#add stops to table
-		if routeid and start and end and riderID:
-			startStop = (routeid,start,riderID)
-			endStop = (routeid,end,riderID)
-			c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",startStop)
-			c.execute("INSERT INTO stops(routeid,location,riderid)VALUES(?,?,?)",endStop)
-			conn.commit()
-			return json.dumps({'result':'all fields correct, inserted into db'})
-		else:
-			return json.dumps({'result':'there was an issue with your request'})
-		conn.close()
+	conn=sqlite3.connect(DATABASE)
+	c=conn.cursor()
+	routeid = request.form['routeid']
+	start = request.form['start']
+	end = request.form['end']
+	riderID = request['username']
+		#add stops to table
+	if routeid and start and end and riderID:
+		stopid = generateUniqueStopId(c)
+		startStop = (stopid, routeid,start,riderID)
+		c.execute("INSERT INTO stops(stopid, routeid,location,riderid)VALUES(?,?,?,?)",startStop)
+		stopid = generateUniqueStopId(c)
+		endStop = (stopid,routeid,end,riderID)
+		c.execute("INSERT INTO stops(stopid, routeid,location,riderid)VALUES(?,?,?,?)",endStop)
+		conn.commit()
+		return json.dumps({'result':'all fields correct, inserted into db'})
+	else:
+		return json.dumps({'result':'there was an issue with your request'})
+	conn.close()
 
 @app.route("/hasRide",methods=['GET'])
 def hasRide():
@@ -220,7 +275,7 @@ def hasRide():
 	username = request.form['username']
 	c.execute("SELECT riderid FROM stops WHERE riderid=?",username)
 	currentRide = c.fetchone()
-	#need to return true if currentRide is not false
+	#need to return True if currentRide is not false
 	#if you couldnt tell I have no idea how to actuall code this stuff.
 	if currentRide:
 		return True
@@ -234,19 +289,23 @@ def hasRide():
 def allDrives():
 	conn=sqlite3.connect(DATABASE)
 	c=conn.cursor()
-	c.execute("SELECT routeid AND time AND date FROM routes")
+	c.execute("SELECT routeid,time,date FROM routes")
 	rows=c.fetchall()
-	list = ()
+	print(rows)
+	list = []
 	for row in rows:
-		c.execute("SELECT location FROM stops WHERE start=true AND routeid=?",row[0])
+		c.execute("SELECT location FROM stops WHERE start='True' AND routeid=?",(row[0],))
 		start = c.fetchone()
-		c.execute("SELECT location FROM stops WHERE end=true AND routeid=?",row[0])
+		c.execute("SELECT location FROM stops WHERE end='True' AND routeid=?",(row[0],))
 		end = c.fetchone()
-		dict = {"routeid":row[0],"start""StartingPoint": start,"Destination": end,"DepartureTime": row[1]+row[2]}
+		print(row)
+		dict = {"routeid":row[0],"StartingPoint": start[0],"Destination": end[0],"DepartureTime": row[1]+" " +row[2]}
 		list.append(dict)
 
 	#pretty sure this data is accessed by the column names so data[index_of_row][column_name] column names are routeid,driverid,date,time case sensitive
-	return json.dumps(list)
+	jsonList = json.dumps(list)
+	finalJson = '{"data":' + jsonList + "}"
+	return finalJson
 	conn.close()
 
 if __name__=="__main__":
