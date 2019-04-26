@@ -132,8 +132,8 @@ class testAll(unittest.TestCase):
     def test_create_main(self):
         # TODO update post data dict with correct field names
         dt = client.post('/createUser', data=dict(
-            username='username',
-            email='joe@example.com',
+            username='test_create_main_username',
+            email='test_create_main_username@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
