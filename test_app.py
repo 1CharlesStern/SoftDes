@@ -47,7 +47,7 @@ class testAll(unittest.TestCase):
 
     # When a user logs in with incorrect credentials, they should not recieve a token
     def test_bad_getToken(self):
-        client.post('/createUser', data=dict(
+        dt = client.post('/createUser', data=dict(
             username='username',
             email='XD',
             password='pass',
@@ -132,8 +132,8 @@ class testAll(unittest.TestCase):
     def test_create_main(self):
         # TODO update post data dict with correct field names
         dt = client.post('/createUser', data=dict(
-            username='username',
-            email='joe@example.com',
+            username='test_create_main_username',
+            email='test_create_main_username@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
@@ -287,10 +287,10 @@ class testAll(unittest.TestCase):
 
     def test_createAcc(self):
         dt = client.post('/createUser', data=dict(
-            username='username',
-            email='haha@example.com',
-            password='passw0rd',
-            confirmPassword='passw0rd'
+            username='test_createAccUsername',
+            email='testCreateAccUsername@example.com',
+            password='testCreateAcc',
+            confirmPassword='testCreateAcc'
         ), follow_redirects=True)
         self.assertEqual(dt.status_code, 200)
         self.assertIn(b'Available Rides', dt.data)
