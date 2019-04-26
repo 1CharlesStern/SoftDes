@@ -152,8 +152,8 @@ class testAll(unittest.TestCase):
     # The User's record should appear in the database
     def test_new_db_record(self):
         client.post('/createUser', data=dict(
-            username='test_create_main_username',
-            email='test_create_main_username@example.com',
+            username='test_create_main_usernameasjknfa',
+            email='testasdad_create_main_username@example.com',
             password='passw0rd',
             confirmPassword='passw0rd'
         ), follow_redirects=True)
